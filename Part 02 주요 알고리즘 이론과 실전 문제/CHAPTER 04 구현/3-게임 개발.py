@@ -12,38 +12,59 @@
 # (입력)
 # 4 4               4 X 4 맵 생성
 # 1 1 0             (1, 1)에서 북쪽(0)을 바라보고 서있음
-# 1 1 1 1           
+# 1 1 1 1
 # 1 0 0 1
 # 1 1 0 1
 # 1 1 1 1
 
 N, M = map(int, input().split())
-x, y, dir = map(int, input().split())
+x, y, d = map(int, input().split())
 
-maps = []
-result = 1
+grid = [list(map(int, input().split())) for _ in range(N)]
 
-for i in range(M):
-    maps.append(list(map(int, input().split())))
+# 방문 체크
+visited = [[0] * M for _ in range(N)]
+visited[x][y] = 1
 
-dx = [0, 0, -1, 1]
-dy = [-1, 1, 0, 0]
-
-used = [[0]*N for _ in range(M)]
-used[x][y] = 1
-
-for n in range(N):
-    for m in range(M):
-        for d in range(4):
-            if 0<= n < N and 0<= m < M and maps[n][m] == 0 and used[n][m] == 0:
-                nx = x + dx[d]
-                ny = y + dy[d]
-                used[n][m] = 1
-                print('n, m', n, m)
-                print('d', d)
-                print('nx, ny', nx, ny)
-                print('-------')
-                result += 1
+# 방향: 0:북(-1,0), 1:동(0,1), 2:남(1,0), 3:서(0,-1)
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
 
 
-print(result)
+def turn_left(d):
+    return (d - 1) % 4
+
+
+count = 1  # 방문한 칸 수
+turn_time = 0  # 연속 회전 횟수(4가 되면 뒤로 이동 시도)
+
+while True:
+    # 1) 왼쪽으로 회전
+    turn_left(d)
+    d = turn_left(d)
+    nx = x + dx[d]
+    ny = y + dy[d]
+
+    # 2) 왼쪽 방향 칸이 미방문 육지면 전진
+    if 0 <= nx < N and 0 <= ny < M and grid[nx][ny] == 0 and visited[nx][ny] == 0:
+        visited[nx][ny] = 1
+        x, y = nx, ny
+        count += 1
+        turn_time = 0
+        continue
+    else:
+        turn_time += 1
+
+    # 3) 네 방향 모두 가봤거나 바다라면 뒤로 이동
+    if turn_time == 4:
+        bx = x - dx[d]
+        by = y - dy[d]
+        #  뒤가 육지면 뒤로만 한 칸
+        if 0 <= bx < N and 0 <= by < M and grid[bx][by] == 0:
+            x, y = bx, by
+            turn_time = 0
+        else:
+            # 뒤가 바다면 종료
+            break
+
+print(count)
