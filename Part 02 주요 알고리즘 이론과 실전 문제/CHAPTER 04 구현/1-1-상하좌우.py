@@ -20,21 +20,49 @@
 N = int(input())
 move = list(map(str, input().split()))
 
-startX = 1
-startY = 1
+def solution1(N, move):
+    startX = 1
+    startY = 1
 
-for i in range(len(move)):
-    if move[i] == "R":
-        if startX + 1 < N:
-            startX += 1
-    if move[i] == "L":
-        if startX - 1 > 0:
-            startX -= 1
-    if move[i] == "U":
-        if startY - 1 > 0:
-            startY -= 1
-    if move[i] == "D":
-        if startY + 1 < N:
-            startY += 1
+    for i in range(len(move)):
+        if move[i] == "L":
+            if startY - 1 > 0: 
+                startY -= 1
+        if move[i] == "R":
+            if startY + 1 < N:
+                startY += 1
+        if move[i] == "U":
+            if startX - 1 > 0:
+                startX -= 1
+        if move[i] == "D":
+            if startX + 1 < N:
+                startX += 1
 
-print(startY, startX)
+    return startX, startY
+
+def solution2(N, move):
+    x, y = 1, 1
+
+    dx = [0, 0, -1, 1]
+    dy = [-1, 1, 0, 0]
+
+    move_types = ['L', 'R', 'U', 'D']
+
+    for m in move:
+        for d in range(4):
+            if m == move_types[d]:
+                nx = x + dx[d]
+                ny = y + dy[d]
+
+        if nx < 1 or ny < 1 or nx > N or ny > N:
+            continue    
+        x, y = nx, ny
+    
+    return nx, ny
+
+
+#print(solution1(N, move))
+print(solution2(N, move))
+
+
+
