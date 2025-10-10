@@ -7,19 +7,30 @@
 # 4 6
 # 19 15 10 17
 
+# (출력)
+# 15
+
 N, M = map(int, input().split())
 tteok = list(map(int, input().split()))
 
 
-def binary(array, target, start, end):
-    mid = (start + end) // 2
-    if mid - array == target:
-        return print(mid)
-    elif mid - array > target:
-        return binary(array, target, start, mid - 1)
-    else:
-        return binary(array, target, mid + 1, end)
+# 절단기 높이를 조절, 최대 높이를 도전
+def binary(array, need):
+    lo, hi = 0, max(array)
+    ans = 0
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        cut_sum = 0
+        for i in array:
+            if mid < i:
+                cut_sum += i - mid
+        if cut_sum >= need:
+            ans = mid
+            lo = mid+1
+        else:
+            hi = mid -1
+    return ans
 
 
-for i in range(N):
-    result = binary(tteok, M, 0, max(tteok))
+result = binary(tteok, M)
+print(result)
