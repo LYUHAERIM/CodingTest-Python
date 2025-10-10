@@ -6,7 +6,7 @@
 
 n = int(input())
 
-best = [0] * n + 1
+best = [0] * (n + 1)
 
 best[1] = 1
 best[2] = 3
